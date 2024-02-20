@@ -1,13 +1,23 @@
 package se.ju23.typespeeder;
 
-import se.ju23.typespeeder.logic.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import se.ju23.typespeeder.logic.GameLogic;
+import se.ju23.typespeeder.logic.MenuLogic;
+import se.ju23.typespeeder.service.LoginService;
 
+@SpringBootApplication
 public class Main {
-    public static void main(String[] args) {
-        TextGenerator textGenerator = new RandomTextGenerator();
-        UserInterface userInterface = new ConsoleUserInterface();
 
-        Game game = new Game(textGenerator, userInterface);
-        game.start();
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+        MenuLogic menuLogic = context.getBean(MenuLogic.class);
+        menuLogic.displayMainMenu();
+
+        GameLogic gameLogic = new GameLogic();
+        gameLogic.startGame();
+
     }
 }
