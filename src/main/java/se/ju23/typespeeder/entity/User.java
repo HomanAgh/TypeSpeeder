@@ -25,6 +25,10 @@ public class User {
     public User() {
     }
 
+    public void addPoints(int points) {
+        this.experience += points; // nytt, kanske ta bort
+    }
+
     public User(long userid, String username, String password) {
         this.userid = userid;
         this.username = username;

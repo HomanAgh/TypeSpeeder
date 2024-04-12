@@ -10,7 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Set;
+
 import org.mockito.Mockito;
+import se.ju23.typespeeder.logic.MenuLogic;
+import se.ju23.typespeeder.logic.MenuLogicImpl;
 
 import static org.mockito.Mockito.*;
 
@@ -34,82 +38,73 @@ public class MenuTest {
     @Test
     public void testClassExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
-            assertNotNull(clazz, "The class 'Menu' should exist.");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.logic.MenuLogic");
+            assertNotNull(clazz, "The class 'MenuLogic' should exist.");
         } catch (ClassNotFoundException e) {
-            fail("The class 'Menu' does not exist.", e);
+            fail("The class 'MenuLogic' does not exist.", e);
         }
     }
 
     @Test
     public void testMethodExists() {
         try {
-            Class<?> clazz = Class.forName("se.ju23.typespeeder.Menu");
-            Method method = clazz.getMethod("displayMenu");
-            assertNotNull(method, "The method 'displayMenu()' should exist in the class 'Menu'.");
+            Class<?> clazz = Class.forName("se.ju23.typespeeder.logic.MenuLogic");
+            Method method = clazz.getMethod("displayMainMenu");
+            assertNotNull(method, "The method 'displayMainMenu()' should exist in the class 'MenuLogic'.");
         } catch (ClassNotFoundException e) {
-            fail("The class 'Menu' does not exist.", e);
+            fail("The class 'MenuLogic' does not exist.", e);
         } catch (NoSuchMethodException e) {
-            fail("The method 'displayMenu()' does not exist in the class 'Menu'.", e);
+            fail("The method 'displayMainMenu()' does not exist in the class 'MenuLogic'.", e);
         }
     }
 
     @Test
     public void testMenuImplementsInterface() {
         try {
-            Class<?> menuClass = Class.forName("se.ju23.typespeeder.Menu");
+            Class<?> menuClass = Class.forName("se.ju23.typespeeder.logic.MenuLogicImpl");
             boolean implementsInterface = false;
 
             Class<?>[] interfaces = menuClass.getInterfaces();
             for (Class<?> iface : interfaces) {
-                if (iface.equals(MenuService.class)) {
+                if (iface.equals(MenuLogic.class)) {
                     implementsInterface = true;
                     break;
                 }
             }
 
-            assertTrue(implementsInterface, "The class 'Menu' should implement the interface 'MenuService'.");
+            assertTrue(implementsInterface, "The class 'MenuLogicImpl' should implement the interface 'MenuLogic'.");
         } catch (ClassNotFoundException e) {
-            fail("The class 'Menu' could not be found", e);
+            fail("The class 'MenuLogicImpl' could not be found", e);
         }
     }
 
     @Test
-    public void testDisplayMenuCallsGetMenuOptionsAndReturnsAtLeastFive() {
-        Menu menuMock = Mockito.spy(new Menu());
-        menuMock.displayMenu();
-        verify(menuMock, times(1)).getMenuOptions();
-        assertTrue(menuMock.getMenuOptions().size() >= 5, "'getMenuOptions()' should return at least 5 alternatives.");
-    }
-
-    @Test
     public void menuShouldHaveAtLeastFiveOptions() {
-        Menu menu = new Menu();
-        List<String> options = menu.getMenuOptions();
+        MenuLogicImpl menu = new MenuLogicImpl(mock(), mock(), mock(), mock(), mock());
+        Set<String> options = menu.options.keySet();
         assertTrue(options.size() >= 5, "The menu should contain at least 5 alternatives.");
     }
 
     @Test
     public void menuShouldPrintAtLeastFiveOptions() {
-        new Menu().displayMenu();
+        new MenuLogicImpl(mock(), mock(), mock(), mock(), mock()).displayEnglishMenu();
         long count = outContent.toString().lines().count();
         assertTrue(count >= 5, "The menu should print out at least 5 alternatives.");
     }
 
     @Test
     public void testUserCanChooseSwedishLanguage() {
-        String input = "svenska\n";
+        String input = "2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        Menu menu = new Menu();
-        menu.displayMenu();
+        MenuLogicImpl menu = new MenuLogicImpl(mock(),mock(),mock(),mock(),mock());
+        menu.chooseLanguage();
 
         String consoleOutput = outContent.toString();
-        assertTrue(consoleOutput.contains("Välj språk (svenska/engelska):"), "Menu should prompt for language selection.");
-        assertTrue(consoleOutput.contains("Svenska valt."), "Menu should confirm Swedish language selection.");
+        assertTrue(consoleOutput.contains("1. English\n2. Svenska"), "Menu should prompt for language selection.");
+        assertTrue(consoleOutput.contains("Språk inställt på svenska."), "Menu should confirm Swedish language selection.");
     }
-
 }

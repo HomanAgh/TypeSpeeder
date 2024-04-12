@@ -1,6 +1,9 @@
 package se.ju23.typespeeder;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import se.ju23.typespeeder.logic.MenuLogicImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,9 +20,10 @@ public class MenuPerformanceTest {
 
     @Test
     public void testGetMenuOptionsExecutionTime() {
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class);
         long startTime = System.nanoTime();
-        Menu menu = new Menu();
-        menu.getMenuOptions();
+        MenuLogicImpl menuLogic = context.getBean(MenuLogicImpl.class);
+        menuLogic.displayEnglishMenu(); //lägga till menuoptions i menulogic
         long endTime = System.nanoTime();
 
         long duration = (endTime - startTime) / MILLISECONDS_CONVERSION;
@@ -29,27 +33,27 @@ public class MenuPerformanceTest {
 
     @Test
     public void testUserCanChooseSwedishLanguageAndPerformance() {
-        String input = "svenska\n";
+        String input = "2\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
+
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class);
+        MenuLogicImpl menu = context.getBean(MenuLogicImpl.class);
+
         long startTime = System.nanoTime();
-
-        Menu menu = new Menu();
-        menu.displayMenu();
-
+        menu.chooseLanguage();
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / MILLISECONDS_CONVERSION;
 
         String consoleOutput = outContent.toString();
 
-        assertTrue(consoleOutput.contains("Välj språk (svenska/engelska):"), "Menu should prompt for language selection.");
+        assertTrue(consoleOutput.contains("1. English\n2. Svenska"), "Menu should prompt for language selection.");
 
-        assertTrue(consoleOutput.contains("Svenska valt."), "Menu should confirm Swedish language selection.");
-
+        assertTrue(consoleOutput.contains("Språk inställt på svenska."), "Menu should confirm Swedish language selection.");
 
         assertTrue(duration <= MAX_EXECUTION_TIME_LANGUAGE_SELECTION, "Menu display and language selection took too long. Execution time: " + duration + " ms.");
     }

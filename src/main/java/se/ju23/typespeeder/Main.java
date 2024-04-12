@@ -8,16 +8,15 @@ import se.ju23.typespeeder.logic.GameLogic;
 import se.ju23.typespeeder.logic.MenuLogic;
 import se.ju23.typespeeder.service.LoginService;
 
+import java.util.Scanner;
+
 @SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
+
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
         MenuLogic menuLogic = context.getBean(MenuLogic.class);
-        menuLogic.displayMainMenu();
-
-        GameLogic gameLogic = new GameLogic();
-        gameLogic.startGame();
-
+        menuLogic.runApplication();
     }
 }

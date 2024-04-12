@@ -1,14 +1,27 @@
 package se.ju23.typespeeder.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import se.ju23.typespeeder.entity.User;
+import se.ju23.typespeeder.entity.UserRepository;
+import se.ju23.typespeeder.service.LoginService;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
+@Component
 public class GameLogic {
+
     private static final String RESET_COLOR = "\u001B[0m";
     private  static final String TEXT_COLOR = "\u001B[36m";
     private static final Scanner SCANNER = new Scanner(System.in);
+    @Autowired
+    private LoginService loginService; //nytt skit som borde tas bort eftersom det inte kommer funka
+    @Autowired
+    private UserRepository userRepository; //samma här
+
     public void startGame() {
         System.out.println("Welcome to Color Typing Game!");
 
@@ -38,6 +51,8 @@ public class GameLogic {
             // Beräkna den totala poängen
             int totalScore = score + orderScore;
 
+            loginService.updateUserExperience(totalScore);
+
             // Beräkna den totala tiden det tog för spelaren att svara
             double elapsedTimeInSeconds = (endTime - startTime) / 1000.0;
 
@@ -48,11 +63,10 @@ public class GameLogic {
             String playAgain = SCANNER.nextLine().toLowerCase();
             if (!playAgain.equals("yes")) {
                 System.out.println("Thanks for playing! Goodbye.");
-                break;
+                System.exit(0);
             }
         }
-
-        SCANNER.close();
+        //SCANNER.close();
     }
 
     private static String generateText(int length, int wordFrequency) {
@@ -80,8 +94,11 @@ public class GameLogic {
 
     private static int countCorrectWords(String userInput, String text) {
         // Jämför användarens inmatning med de genererade orden
-        String[] generatedWords = text.split("\\s+");
-        String[] inputWords = userInput.split("\\s+");
+        String cleanText = removeColorCodes(text); //nytt
+        String cleanUserInput = removeColorCodes(userInput);//nytt
+
+        String[] generatedWords = cleanText.split("\\s+"); //ändra text till cleanText
+        String[] inputWords = cleanUserInput.split("\\s+");//ändra userInput till cleanUserInput
 
         List<String> correctWordsList = new ArrayList<>();
 
@@ -97,9 +114,12 @@ public class GameLogic {
     }
 
     private static int countOrderScore(String userInput, String text) {
+        String cleanText = removeColorCodes(text);//nytt
+        String cleanUserInput = removeColorCodes(userInput);//nytt
+
         // Räkna antalet ord som är i rätt ordning
-        String[] generatedWords = text.split("\\s+");
-        String[] inputWords = userInput.split("\\s+");
+        String[] generatedWords = cleanText.split("\\s+");//samma som countcorrect..
+        String[] inputWords = cleanUserInput.split("\\s+");//samma som count...
 
         int orderScore = 0;
         int minLen = Math.min(generatedWords.length, inputWords.length);
@@ -112,22 +132,8 @@ public class GameLogic {
 
         return orderScore;
     }
-
-    public void startChallengeMode() {
-        System.out.println("Type: 'I come from the land down under' as fast as you can!");
-        String challengeText = "I come from the land down under";
-        long startTime = System.currentTimeMillis();
-
-        String userInput = SCANNER.nextLine();
-
-        long endTime = System.currentTimeMillis();
-        double elapsedTimeInSeconds = (endTime - startTime) / 1000.0;
-
-        if(userInput.equalsIgnoreCase(challengeText) && elapsedTimeInSeconds <= 10) {
-            System.out.println("Congratulations! You've you completed the challenge in " + elapsedTimeInSeconds + " seconds and earned 30 points!");
-
-        } else {
-            System.out.println("Challenge failed. You took " + elapsedTimeInSeconds + " seconds. Try again!");
-        }
+    private static String removeColorCodes(String text) {
+        return text.replaceAll("\\u001B\\[[;\\d]*m", "");
     }
+
 }

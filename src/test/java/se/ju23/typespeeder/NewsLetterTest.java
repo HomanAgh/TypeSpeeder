@@ -16,18 +16,18 @@ public class NewsLetterTest {
     @Test
     public void testNewsLetterClassExists() {
         try {
-            Class.forName("NewsLetter");
+            Class.forName("se.ju23.typespeeder.entity.News");
         } catch (ClassNotFoundException e) {
-            throw new AssertionError("NewsLetter class should exist.", e);
+            throw new AssertionError("News class should exist.", e);
         }
     }
     @Test
     public void testNewsLetterContentLength() {
         try {
-            Class<?> newsLetterClass = Class.forName("NewsLetter");
+            Class<?> newsLetterClass = Class.forName("se.ju23.typespeeder.entity.News");
 
             Field contentField = newsLetterClass.getDeclaredField("content");
-            assertNotNull(contentField, "Field 'content' should exist in NewsLetter.");
+            assertNotNull(contentField, "Field 'content' should exist in News.");
 
             assertTrue(contentField.getType().equals(String.class), "Field 'content' should be of type String.");
 
@@ -47,10 +47,10 @@ public class NewsLetterTest {
     @Test
     public void testNewsLetterPublishDateTime() {
         try {
-            Class<?> someClass = Class.forName("NewsLetter");
+            Class<?> someClass = Class.forName("se.ju23.typespeeder.entity.News");
 
-            Field publishDateTime = someClass.getDeclaredField("publishDateTime");
-            assertNotNull(publishDateTime, "Field 'publishDateTime' should exist in NewsLetter class.");
+            Field publishDateTime = someClass.getDeclaredField("publishDate");
+            assertNotNull(publishDateTime, "Field 'publishDateTime' should exist in News class.");
 
             assertTrue(publishDateTime.getType().equals(LocalDateTime.class), "Field 'publishDateTime' should be of type LocalDateTime.");
 
@@ -59,9 +59,9 @@ public class NewsLetterTest {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTimeValue.format(formatter);
-            assertEquals("Expected format", formattedDateTime, "'publishDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
+            assertEquals("2024-01-01 00:00:00", formattedDateTime, "'publishDateTime' field should have format 'yyyy-MM-dd HH:mm:ss'.");
 
-            Method getterMethod = someClass.getDeclaredMethod("getPublishDateTime");
+            Method getterMethod = someClass.getDeclaredMethod("getPublishDate");
             assertNotNull(getterMethod, "Getter method for the field 'publishDateTime' should exist.");
 
 

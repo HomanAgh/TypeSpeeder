@@ -2,6 +2,7 @@ package se.ju23.typespeeder.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class News {
@@ -12,28 +13,11 @@ public class News {
     private String title;
     private String content;
     @Column(name = "publish_date")
-    private LocalDateTime publishDate;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    public LocalDateTime publishDate;
 
     public News() {
-    }
-
-    public News(Long id, String title, String content, LocalDateTime publishDate) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.publishDate = publishDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        this.content = "Today marks the launch of Streamline, an innovative app designed to enhance productivity for remote teams. Developed by TechForward";
+        this.publishDate = LocalDateTime.parse("2024-01-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public Long getId() {

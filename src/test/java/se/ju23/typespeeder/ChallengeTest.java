@@ -9,7 +9,7 @@ public class ChallengeTest {
     @Test
     public void testChallengeClassExists() {
         try {
-            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.Challenge");
+            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.logic.Challenge");
         } catch (ClassNotFoundException e) {
             fail("Challenge class could not be found.");
         }
@@ -17,7 +17,7 @@ public class ChallengeTest {
     @Test
     public void testLettersToTypeMethodExists() {
         try {
-            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.Challenge");
+            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.logic.Challenge");
             Method method = challengeClass.getMethod("lettersToType");
             assertNotNull(method, "The method 'lettersToType' should exist in the Challenge class.");
         } catch (NoSuchMethodException | ClassNotFoundException e) {
@@ -27,7 +27,7 @@ public class ChallengeTest {
     @Test
     public void testStartChallengeMethodExists() {
         try {
-            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.Challenge");
+            Class<?> challengeClass = Class.forName("se.ju23.typespeeder.logic.Challenge");
             Method method = challengeClass.getMethod("startChallenge");
             assertNotNull(method, "The method 'startChallenge' should exist in the Challenge class.");
         } catch (NoSuchMethodException | ClassNotFoundException e) {
